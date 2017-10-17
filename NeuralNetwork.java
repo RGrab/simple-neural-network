@@ -8,10 +8,12 @@ public class NeuralNetwork{
     hiddenNodes,
     outputNodes;
 
+  // Controlls how much the newtwork can chainge between iterations.
   float learningRate;
 
   Random randGen = new Random();
 
+  // Holds the weights inbetween layers.
   Matrix inputWeights,hiddenWeights;
 
   // Used to initialize the neural network size, and weights.
@@ -46,16 +48,20 @@ public class NeuralNetwork{
 
   }
 
-  // Generate a photo from the trained neural network.
+  // Generates a guess of what digit was drawn.
   public Matrix generateGuess(Matrix inputs){
+      // apply weights to input data to be stored in inputSignal.
       Matrix inputSignal = inputWeights.times(inputs);
 
+      //normalize values for inputSignal.
       for(int i = 0; i < inputSignal.getRowDimension(); i++){
         inputSignal.set(i,0,sigmoid(inputSignal.get(i,0)));
       }
 
+      // apply weights to inputSignal to be stored in hiddenSignal.
       Matrix hiddenSignal = hiddenWeights.times(inputSignal);
 
+      //normalize data in hiddenSignal.
       for(int i = 0; i < hiddenSignal.getRowDimension(); i++){
         hiddenSignal.set(i,0,sigmoid(hiddenSignal.get(i,0)));
       }
