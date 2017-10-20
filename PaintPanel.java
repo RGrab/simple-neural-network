@@ -22,7 +22,7 @@ public class PaintPanel extends JPanel{
   public void paintComponent(Graphics g){
     //paint panel White
     g.setColor(Color.WHITE);
-    g.fillRect(0, 0, main.frameWidth, main.frameHeight);
+    g.fillRect(0, 0, Brain.frameWidth, Brain.frameHeight);
 
     //if image is available draw it.
     if(mnistData != null){

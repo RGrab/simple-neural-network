@@ -17,7 +17,7 @@ public class NeuralNetwork{
   Matrix inputWeights,hiddenWeights;
 
   // Used to initialize the neural network size, and weights.
-  public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes,double learningRate){
+  public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double learningRate){
     // Initialize size.
     this.inputNodes = new Integer(inputNodes);
     this.hiddenNodes = new Integer(hiddenNodes);
