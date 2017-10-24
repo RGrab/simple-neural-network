@@ -17,7 +17,7 @@ public class NeuralNetwork{
   Matrix inputWeights,hiddenWeights;
 
   // Used to initialize the neural network size, and weights.
-  public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes,double learningRate){
+  public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double learningRate){
     // Initialize size.
     this.inputNodes = new Integer(inputNodes);
     this.hiddenNodes = new Integer(hiddenNodes);
@@ -120,9 +120,9 @@ public class NeuralNetwork{
   //returns a Matrix that is eaqual to 1 - input.
   private Matrix oneMinus(Matrix input){
 
-    for(int i = 0 ; i < input.getRowDimension() ; i++){
-      for(int j = 0 ; j < input.getColumnDimension() ; j++){
-        input.set(i,j,1 - input.get(i,j));
+    for(int i = 0; i < input.getRowDimension(); i++){
+      for(int j = 0; j < input.getColumnDimension(); j++){
+        input.set(i, j, 1 - input.get(i, j));
       }
     }
 

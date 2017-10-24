@@ -1,9 +1,7 @@
-import Jama.Matrix;
-
 public class main {
-  public static void main(String[] args){
+//home/ryan/java-jar-packages/Jama-1.0.3.jar
 
-    NeuralNetwork neuralNetwork = new NeuralNetwork(3,3,3,.3d);
-    System.out.println("DONE!");
+  public static void main(String[] args){
+        Brain brain = new Brain();
   }
 }
