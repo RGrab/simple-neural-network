@@ -1,5 +1,7 @@
 import javax.swing.JFrame;
 import java.util.ArrayList;
+import java.util.Arrays;
+import Jama.Matrix;
 
 public class Brain {
 
@@ -13,21 +15,45 @@ public class Brain {
 
   // number of input, hidden, and output nodes.
   private int inputNodes = 784;
-  private int hiddenNodes = 387;
+  private int hiddenNodes = 150;
   private int outputNodes = 10;
-  private double learningRate = 0.3;
 
-  //creating instance of neural network.
+  //how quickly the network can change.
+  private double learningRate = 0.2;
+
+  //creating instance of neural network
   NeuralNetwork neuralNetwork = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate);
 
   private static PaintPanel paintPannel;
 
+  private double accuracy;
+
+  //constructor method.
   public Brain(){
+
+    //load training and testing data
     MnistData mnistTrainingData = new MnistData("./mnist-data/mnist_train.csv");
     MnistData mnistTestingData = new MnistData("./mnist-data/mnist_test.csv");
 
+    //train neural network
+    for(int i = 0; i < mnistTrainingData.dataSize(); i++){
+      //converted and normalized input values
+      double[] doubleInputs = scaleInput(convertInput(mnistTrainingData.getDataByIndex(i)));
+
+      //create one dementional matrix
+      Matrix inputs = new Matrix(Arrays.copyOfRange(doubleInputs, 1, doubleInputs.length), doubleInputs.length - 1 );
+
+      //train network
+      neuralNetwork.train(inputs, createTargetMatrix(doubleInputs[0]));
+
+    }
+
+    //test neural network
+    accuracy = testNeural(mnistTestingData);
+    System.out.println("Accuracy : " + accuracy);
+
     //setting up JFrame options.
-    paintPannel = new PaintPanel(mnistTrainingData.getDataByIndex(1000));
+    paintPannel = new PaintPanel(mnistTrainingData.getDataByIndex(0));
     JFrame frame = new JFrame("Sample-Neural-Network");
     frame.setSize(frameWidth,frameHeight);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,21 +61,35 @@ public class Brain {
     frame.setResizable(false);
     frame.add(paintPannel);
     frame.setVisible(true);
+  }
 
-    Double[] test= new Double[785];
-    test = convertInput(mnistTrainingData.getDataByIndex(1000));
-    test = scaleInput(test);
-    for(int i = 0; i < test.length; i++){
-      System.out.println(test[i]);
+  private double testNeural(MnistData mnistTestingData){
+
+    int totalCorrect = 0;
+
+    for(int i = 0; i < mnistTestingData.dataSize(); i++){
+      //converted and normalized input values
+      double[] doubleInputs = scaleInput(convertInput(mnistTestingData.getDataByIndex(i)));
+
+      //create one dementional matrix
+      Matrix inputs = new Matrix(Arrays.copyOfRange(doubleInputs, 1, doubleInputs.length), doubleInputs.length - 1 );
+
+      //train network
+      Matrix guessMatrix = neuralNetwork.generateGuess(inputs);
+        if(guess(guessMatrix) == (int) doubleInputs[0]){
+          totalCorrect += 1;
+        }
     }
+
+    return (double) totalCorrect/(mnistTestingData.dataSize()-1);
   }
 
   // scales data betweeen .01 and 1
-  private Double[] scaleInput(Double[] mnistDataDouble){
+  private double[] scaleInput(double[] mnistDataDouble){
 
     //value at index 0 contains target output and should not be changed.
     for(int i = 1; i < mnistDataDouble.length; i++){
-      //scaled output = (value - min)/(max - min)
+      //scaled output = (value - min)/(max - min) + offset
       mnistDataDouble[i] = (mnistDataDouble[i] - 0)/(258 - 0) + .01;
     }
 
@@ -57,20 +97,42 @@ public class Brain {
   }
 
   //convert csv string into array of doubles.
-  private Double[] convertInput(String mnistDataString){
+  private double[] convertInput(String mnistDataString){
 
     String[] splitMnistData = mnistDataString.split(",");
-    ArrayList<Double> mnistDataDouble = new ArrayList<Double>();
+    double[] mnistDataDouble = new double[splitMnistData.length];
 
     for(int i = 0; i < splitMnistData.length; i++){
-      mnistDataDouble.add(Double.parseDouble(splitMnistData[i]));
+      mnistDataDouble[i] = Double.parseDouble(splitMnistData[i]);
     }
 
-    //converting ArrayList to an array.
-    Double[] mnistDataDoubleArray = new Double[mnistDataDouble.size()];
-    mnistDataDoubleArray = mnistDataDouble.toArray(mnistDataDoubleArray);
+    return mnistDataDouble;
 
-    return mnistDataDoubleArray;
+  }
 
+  //returns target matrix.
+  private Matrix createTargetMatrix(double target){
+    //create an array of length ouputNodes initialized to .01
+    double[] targetArray = new double[this.outputNodes];
+    Arrays.fill(targetArray, .01);
+
+    //index of target value = to .99
+    targetArray[(int) target] = .99;
+
+    return new Matrix(targetArray, targetArray.length);
+  }
+
+  private int guess(Matrix guessMatrix){
+    //convert matrix into 1d array
+    double[] guessArray = guessMatrix.getRowPackedCopy();
+    double currentMax = guessArray[0];
+    int guess = 0;
+    for(int i = 1; i < guessArray.length; i++){
+      if(guessArray[i] >= currentMax){
+        guess = i;
+        currentMax = guessArray[i];
+      }
+    }
+    return guess;
   }
 }
