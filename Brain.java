@@ -52,15 +52,6 @@ public class Brain {
     accuracy = testNeural(mnistTestingData);
     System.out.println("Accuracy : " + accuracy);
 
-    //setting up JFrame options.
-    paintPannel = new PaintPanel(mnistTrainingData.getDataByIndex(0));
-    JFrame frame = new JFrame("Sample-Neural-Network");
-    frame.setSize(frameWidth,frameHeight);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-    frame.setResizable(false);
-    frame.add(paintPannel);
-    frame.setVisible(true);
   }
 
   private double testNeural(MnistData mnistTestingData){
