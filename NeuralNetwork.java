@@ -4,129 +4,117 @@ import Jama.Matrix;
 
 public class NeuralNetwork{
 
-  int inputNodes,
+  private final int inputNodes,
     hiddenNodes,
     outputNodes;
 
-  // Controlls how much the newtwork can chainge between iterations.
-  double learningRate;
+  private double learningRate;
 
-  Random randGen = new Random();
+  private Matrix weightInputHidden,
+    weightHiddenOutput;
 
-  // Holds the weights inbetween layers.
-  Matrix inputWeights,hiddenWeights;
+  private Random random = new Random();
 
-  // Used to initialize the neural network size, and weights.
   public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double learningRate){
-    // Initialize size.
-    this.inputNodes = new Integer(inputNodes);
-    this.hiddenNodes = new Integer(hiddenNodes);
-    this.outputNodes = new Integer(outputNodes);
-    this.learningRate = new Double(learningRate);
+    this.inputNodes = inputNodes;
+    this.hiddenNodes = hiddenNodes;
+    this.outputNodes = outputNodes;
+    this.learningRate = learningRate;
 
-    // Initialize weight matrix.
-    inputWeights = new Matrix(hiddenNodes,inputNodes);
-    hiddenWeights = new Matrix(outputNodes,hiddenNodes);
+    weightInputHidden = randomWeightMatrix(hiddenNodes, inputNodes);
+    weightHiddenOutput = randomWeightMatrix(outputNodes, hiddenNodes);
 
-    // Generate random weights for inputWeights.
-    for(int i = 0; i < hiddenNodes; i++){
-      for(int j =  0; j < inputNodes; j++){
-        inputWeights.set(i,j,randGen.nextGaussian()*Math.pow(hiddenNodes,-0.5));
-      }
-    }
-
-    // Generate random weights for hiddenWeights.
-    for(int i = 0; i < outputNodes; i++){
-      for(int j = 0; j < hiddenNodes; j++){
-        hiddenWeights.set(i,j,randGen.nextGaussian()*Math.pow(outputNodes,-0.5));
-      }
-    }
   }
 
-  // Train the neural network.
   public void train(Matrix inputs, Matrix targets){
 
-    // apply weights to inputs using matrix multiplication.
-    Matrix inputSignal = inputWeights.times(inputs);
+    //inputs = inputs.transpose();
+    //targets = targets.transpose();
 
-    //normalize values for inputSignal.
-    for(int i = 0; i < inputSignal.getRowDimension(); i++){
-      inputSignal.set(i,0,sigmoid(inputSignal.get(i,0)));
-    }
+    //feed inputs into hidden layer.
+    Matrix hiddenInput = weightInputHidden.times(inputs);
+    //calculate outputs of hidden layer.
+    Matrix hiddenOutput = activationFunction(hiddenInput);
 
-    // apply weights to hiddenSignal using matrix multiplication.
-    Matrix hiddenSignal = hiddenWeights.times(inputSignal);
+    //feed hidden layer outputs into output layer.
+    Matrix outputInput = weightHiddenOutput.times(hiddenOutput);
+    //calculate outputs of output layer
+    Matrix outputOutput = activationFunction(outputInput);
 
-    //normalize values for inputSignal.
-    for(int i = 0; i < hiddenSignal.getRowDimension(); i++){
-      hiddenSignal.set(i,0,sigmoid(inputSignal.get(i,0)));
-    }
+    //calulate output error. (targets - actuall)
+    Matrix outputError = targets.minus(outputOutput);
+    // apply weightHiddenOutput to output error.
+    Matrix hiddenError = weightHiddenOutput.transpose().times(outputError);
 
-    // calculate the error.
-    // error is (target - actuall).
-    Matrix outputError = hiddenSignal.minus(hiddenSignal);
-
-    //hidden error is outputError distributed by weights.
-    Matrix hiddenError = hiddenWeights.times(outputError);
-
-
-    //update the weights for the links between the hidden and output layers.
-    //calulates and applys the change in weight values according to error and weight.
-    hiddenWeights.plusEquals(
-      outputError.arrayTimes(hiddenSignal)
-      .arrayTimes(oneMinus(hiddenSignal))
-      .times(inputSignal.transpose())
+    //update weightHiddenOutput.
+    weightHiddenOutput.plusEquals(
+      (
+        outputError.arrayTimes(outputOutput)
+        .arrayTimes(
+          new Matrix(outputError.getRowDimension(), outputError.getColumnDimension(), 1)
+          .minus(outputOutput))
+      )
+      .times(hiddenOutput.transpose())
       .times(learningRate)
     );
 
-    //update the weights for the links between the input and hidden layers.
-    //calulates and applys the change in weight according to error and weight.
-    inputWeights.plusEquals(
-      hiddenError.arrayTimes(inputSignal)
-      .arrayTimes(oneMinus(inputSignal))
+    weightInputHidden.plusEquals(
+      (
+        hiddenError.arrayTimes(hiddenOutput)
+        .arrayTimes(
+          new Matrix(hiddenError.getRowDimension(), hiddenError.getColumnDimension(), 1)
+          .minus(hiddenOutput))
+      )
       .times(inputs.transpose())
       .times(learningRate)
     );
-
   }
 
   // Generates a guess of what digit was drawn.
   public Matrix generateGuess(Matrix inputs){
-      // apply weights to inputs using matrix multiplication.
-      Matrix inputSignal = inputWeights.times(inputs);
+    //feed inputs into hidden layer.
+    Matrix hiddenInput = weightInputHidden.times(inputs);
+    //calculate outputs of hidden layer.
+    Matrix hiddenOutput = activationFunction(hiddenInput);
 
-      //normalize values for inputSignal.
-      for(int i = 0; i < inputSignal.getRowDimension(); i++){
-        inputSignal.set(i,0,sigmoid(inputSignal.get(i,0)));
-      }
+    //feed hidden layer outputs into output layer.
+    Matrix outputInput = weightHiddenOutput.times(hiddenOutput);
+    //calculate outputs of output layer
+    Matrix outputOutput = activationFunction(outputInput);
 
-      // apply weights to inputSignal to be stored in hiddenSignal.
-      Matrix hiddenSignal = hiddenWeights.times(inputSignal);
-
-      //normalize data in hiddenSignal.
-      for(int i = 0; i < hiddenSignal.getRowDimension(); i++){
-        hiddenSignal.set(i,0,sigmoid(hiddenSignal.get(i,0)));
-      }
-
-      return hiddenSignal;
+      return outputOutput;
 
   }
 
-  // Also known as the activation function.
-  private double sigmoid(double input){
-    return 1/(1 + Math.exp(-input));
-  }
-
-  //returns a Matrix that is eaqual to 1 - input.
-  private Matrix oneMinus(Matrix input){
-
+  /**
+  *activationFunction (sigmoid)
+  *
+  *@param input : input to be normalized
+  *@return Matrix : input normalized
+  */
+  private Matrix activationFunction(Matrix input){
     for(int i = 0; i < input.getRowDimension(); i++){
       for(int j = 0; j < input.getColumnDimension(); j++){
-        input.set(i, j, 1 - input.get(i, j));
+        input.set(i, j, 1/(1 + Math.exp(- input.get(i, j))));
       }
     }
-
     return input;
   }
 
+  /**
+  *randomWeightMatrix
+  *
+  *@param row
+  *@param col
+  *@return row by col matrix
+  */
+  private Matrix randomWeightMatrix(int row, int col){
+    Matrix retMatrix = new Matrix(row, col);
+    for(int i = 0; i < retMatrix.getRowDimension(); i++){
+      for(int j = 0; j < retMatrix.getColumnDimension(); j++){
+        retMatrix.set(i, j, random.nextGaussian() * Math.pow(hiddenNodes, -0.5));
+      }
+    }
+    return retMatrix;
+  }
 }

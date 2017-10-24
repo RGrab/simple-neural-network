@@ -26,7 +26,7 @@ public class MnistData{
       FileReader fileReader = new FileReader(fileName);
       BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-      //stares data into ArrayList Data one line at a time.
+      //stores data into ArrayList Data one line at a time.
       while((line = bufferedReader.readLine()) != null){
         this.data.add(line);
       }
@@ -41,5 +41,10 @@ public class MnistData{
 
   public String getDataByIndex(int index){
     return data.get(index);
+  }
+
+  //return size of data.
+  public int dataSize(){
+    return this.data.size();
   }
 }
