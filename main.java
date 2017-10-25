@@ -1,7 +1,70 @@
+import java.util.Scanner;
+import java.awt.Button;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.Box;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+
 public class main {
-//home/ryan/java-jar-packages/Jama-1.0.3.jar
+  Scanner keyboard = new Scanner(System.in);
 
   public static void main(String[] args){
+    System.out.println("===============================");
+    System.out.println("|~~  Simple Neural Network  ~~|");
+    System.out.println("===============================");
+
         Brain brain = new Brain();
+        UserDraw userDraw = new UserDraw();
+        userDraw.clear();
+
+        NumberDraw numberDraw = new NumberDraw();
+        numberDraw.clear();
+
+        JFrame frame = new JFrame("Simple Neural Network");
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
+
+
+        // used to submit drawings to be evaluated by neuralNetwork.
+        JButton submitBtn = new JButton("Submit");
+        submitBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, submitBtn.getMinimumSize().height));
+        submitBtn.addActionListener(new ActionListener(){
+          public void actionPerformed(ActionEvent e){
+                numberDraw.paintNumber(brain.userTestNeural(userDraw.getImageString()));
+          }
+        });
+
+        //used to clear the UserDraw pannel.
+        JButton clearBtn = new JButton("Clear");
+        clearBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, clearBtn.getMinimumSize().height));
+        clearBtn.addActionListener(new ActionListener(){
+          public void actionPerformed(ActionEvent e){
+            userDraw.clear();
+            numberDraw.clear();
+          }
+        });
+
+        buttonPanel.add(submitBtn);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(clearBtn);
+        buttonPanel.add(Box.createVerticalGlue());
+        frame.add(userDraw , BorderLayout.LINE_START);
+        frame.add(buttonPanel , BorderLayout.CENTER);
+        frame.add(numberDraw , BorderLayout.LINE_END);
+        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 }
