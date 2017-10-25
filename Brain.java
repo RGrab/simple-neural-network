@@ -1,6 +1,7 @@
-import javax.swing.JFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import Jama.Matrix;
 
 public class Brain {
@@ -21,12 +22,12 @@ public class Brain {
   //how quickly the network can change.
   private double learningRate = 0.2;
 
+  //% accuracy
+  private BigDecimal accuracy;
+
   //creating instance of neural network
   NeuralNetwork neuralNetwork = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate);
 
-  private static PaintPanel paintPannel;
-
-  private double accuracy;
 
   //constructor method.
   public Brain(){
@@ -34,6 +35,24 @@ public class Brain {
     //load training and testing data
     MnistData mnistTrainingData = new MnistData("./mnist-data/mnist_train.csv");
     MnistData mnistTestingData = new MnistData("./mnist-data/mnist_test.csv");
+
+    //train neural network
+    trainNeural(mnistTrainingData);
+
+    //test neural network formated (12.34)
+    accuracy = new BigDecimal(testNeural(mnistTestingData) * 100).round(new MathContext(4));
+
+    System.out.println("===============================");
+    System.out.println("|~~         Done !          ~~|");
+    System.out.println("|~~     %" + accuracy + " accurate     ~~|");
+    System.out.println("===============================");
+  }
+
+  private void trainNeural(MnistData mnistTrainingData){
+
+    System.out.println("===============================");
+    System.out.println("|~~ Training Neural Network ~~|");
+    System.out.println("===============================");
 
     //train neural network
     for(int i = 0; i < mnistTrainingData.dataSize(); i++){
@@ -47,23 +66,13 @@ public class Brain {
       neuralNetwork.train(inputs, createTargetMatrix(doubleInputs[0]));
 
     }
-
-    //test neural network
-    accuracy = testNeural(mnistTestingData);
-    System.out.println("Accuracy : " + accuracy);
-
-    //setting up JFrame options.
-    paintPannel = new PaintPanel(mnistTrainingData.getDataByIndex(0));
-    JFrame frame = new JFrame("Sample-Neural-Network");
-    frame.setSize(frameWidth,frameHeight);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-    frame.setResizable(false);
-    frame.add(paintPannel);
-    frame.setVisible(true);
   }
 
   private double testNeural(MnistData mnistTestingData){
+
+    System.out.println("===============================");
+    System.out.println("|~~ Testing Neural Network  ~~|");
+    System.out.println("===============================");
 
     int totalCorrect = 0;
 
@@ -82,6 +91,18 @@ public class Brain {
     }
 
     return (double) totalCorrect/(mnistTestingData.dataSize()-1);
+  }
+
+  public int userTestNeural(String inputString){
+    double[] doubleInputs = scaleInput(convertInput(inputString));
+
+    //create one dementional matrix
+    Matrix inputs = new Matrix(Arrays.copyOfRange(doubleInputs, 0, doubleInputs.length), doubleInputs.length);
+
+    //train network
+    Matrix guessMatrix = neuralNetwork.generateGuess(inputs);
+
+    return guess(guessMatrix);
   }
 
   // scales data betweeen .01 and 1
@@ -122,7 +143,7 @@ public class Brain {
     return new Matrix(targetArray, targetArray.length);
   }
 
-  private int guess(Matrix guessMatrix){
+  public int guess(Matrix guessMatrix){
     //convert matrix into 1d array
     double[] guessArray = guessMatrix.getRowPackedCopy();
     double currentMax = guessArray[0];
