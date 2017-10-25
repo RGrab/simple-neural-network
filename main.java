@@ -44,6 +44,7 @@ public class main {
         submitBtn.addActionListener(new ActionListener(){
           public void actionPerformed(ActionEvent e){
 
+                numberDraw.clear();
                 numberDraw.paintNumber(brain.userTestNeural(userDraw.getImageString()));
           }
         });
