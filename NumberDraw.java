@@ -1,4 +1,3 @@
-import java.lang.Math;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -6,7 +5,6 @@ import java.awt.RenderingHints;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class NumberDraw extends JPanel{

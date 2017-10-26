@@ -17,7 +17,7 @@ public class UserDraw extends JPanel implements MouseMotionListener {
     final static int height = pxCount * scale;
     BufferedImage img;
 
-    UserDraw() {
+    public UserDraw() {
 
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
         setPreferredSize(new Dimension(width, height));
