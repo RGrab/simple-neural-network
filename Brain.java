@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -26,10 +25,8 @@ public class Brain {
   private BigDecimal accuracy;
 
   //creating instance of neural network
-  NeuralNetwork neuralNetwork = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate);
+  private NeuralNetwork neuralNetwork = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate);
 
-
-  //constructor method.
   public Brain(){
 
     //load training and testing data
@@ -48,6 +45,11 @@ public class Brain {
     System.out.println("===============================");
   }
 
+  /**
+  * trains the neural network.
+  *
+  *@param MnistData mnistTrainingData.
+  */
   private void trainNeural(MnistData mnistTrainingData){
 
     System.out.println("===============================");
@@ -68,6 +70,12 @@ public class Brain {
     }
   }
 
+  /**
+  * tests neuralNetwork to obtain an accuracy.
+  *
+  *@param mnistData mnistTestingData.
+  *@return doube : % acuraccy of neuralNetwork.
+  */
   private double testNeural(MnistData mnistTestingData){
 
     System.out.println("===============================");
@@ -93,6 +101,12 @@ public class Brain {
     return (double) totalCorrect/(mnistTestingData.dataSize()-1);
   }
 
+  /**
+  * tests neural network with user drawing.
+  *
+  *@param String inputString : format csv string.
+  *@return int : number neural networks predicts drawn.
+  */
   public int userTestNeural(String inputString){
     double[] doubleInputs = scaleInput(convertInput(inputString));
 
@@ -105,7 +119,12 @@ public class Brain {
     return guess(guessMatrix);
   }
 
-  // scales data betweeen .01 and 1
+  /**
+  *scales data betweeen .01 and 1.
+  *
+  *@param double[] mnistDataDouble : values of one line of MnistData.
+  *@return double[]
+  */
   private double[] scaleInput(double[] mnistDataDouble){
 
     //value at index 0 contains target output and should not be changed.
@@ -117,7 +136,12 @@ public class Brain {
     return mnistDataDouble;
   }
 
-  //convert csv string into array of doubles.
+  /**
+  *convert csv string into array of doubles.
+  *
+  *@param String mnistDataString : one line of Mnistdata.
+  *@return double[]
+  */
   private double[] convertInput(String mnistDataString){
 
     String[] splitMnistData = mnistDataString.split(",");
@@ -131,7 +155,12 @@ public class Brain {
 
   }
 
-  //returns target matrix.
+  /*
+  *returns target matrix. target matrix is the expected output of the NeuralNetwork.
+  *
+  *@param double target
+  *@return Matrix : target Matrix.
+  */
   private Matrix createTargetMatrix(double target){
     //create an array of length ouputNodes initialized to .01
     double[] targetArray = new double[this.outputNodes];
@@ -143,11 +172,18 @@ public class Brain {
     return new Matrix(targetArray, targetArray.length);
   }
 
+  /**
+  * finds the max value in the guessMatrix.
+  *
+  *@param Matrix guessMatrix : returned value from NeuralNetwork.generateGuess() method.
+  *@return int.
+  */
   public int guess(Matrix guessMatrix){
-    //convert matrix into 1d array
+
     double[] guessArray = guessMatrix.getRowPackedCopy();
     double currentMax = guessArray[0];
     int guess = 0;
+
     for(int i = 1; i < guessArray.length; i++){
       if(guessArray[i] >= currentMax){
         guess = i;

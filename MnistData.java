@@ -3,12 +3,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class MnistData{
 
-  //holds each line in the csv as an element in ArrayList.
+  //holds each line in the csv as an element.
   private ArrayList<String> data = new ArrayList<String>();
 
   public MnistData(){
@@ -18,7 +17,13 @@ public class MnistData{
     storedata(filename);
   }
 
+  /**
+  * reads in and stores data from file.
+  *
+  *@param String fileName : file to read from.
+  */
   private void storedata(String fileName){
+    // check to make sure file opens and is read correctly.
     try{
       //temporarily hold line data.
       String line = null;
@@ -39,11 +44,19 @@ public class MnistData{
     }
   }
 
+  /**
+  * returns queried data given index.
+  *
+  *@param int index
+  *@return String : mnist line data.
+  */
   public String getDataByIndex(int index){
     return data.get(index);
   }
 
-  //return size of data.
+  /**
+  * return size of data.
+  */
   public int dataSize(){
     return this.data.size();
   }
