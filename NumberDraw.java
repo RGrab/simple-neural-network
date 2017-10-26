@@ -29,21 +29,32 @@ public class NumberDraw extends JPanel{
     public void paintComponent(Graphics g) {
          g.drawImage(img, 0, 0, null);
     }
-
+    /**
+    * displays number to img.
+    *
+    *@param int number : number to display.
+    */
     public void paintNumber(int number){
       Graphics g = img.getGraphics();
 
       g.setFont(new Font("TimesRoman", Font.PLAIN, this.fontSize));
       g.setColor(Color.black);
+
       String stringNumber = String.valueOf(number);
       FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
+
+      //center string in image.
       int x = (width - fontMetrics.stringWidth(stringNumber)) / 2;
       int y = ((height - fontMetrics.getHeight()) / 2) + fontMetrics.getAscent();
 
       g.drawString(stringNumber, x, y);
+
       repaint();
     }
 
+    /**
+    * set whole image to white
+    */
     public void clear(){
       Graphics g = img.getGraphics();
       g.setColor(Color.white);
