@@ -31,7 +31,7 @@ This project uses the Java Matrix package known as [JAMA](http://math.nist.gov/j
   * Run `java -cp <path to JAMA>; main` 
   
 * If the run was successful the command line should look like this
- * ![Command Line](https://i.imgur.com/XYF59wG.png)
+ ![Command Line](https://i.imgur.com/XYF59wG.png)
  
 * You will be greeted with a window that looks like this:
  ![Neural Network Window](https://i.imgur.com/KazJP0x.png)
