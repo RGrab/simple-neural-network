@@ -29,6 +29,20 @@ This project uses the Java Matrix package known as [JAMA](http://math.nist.gov/j
 
 * For Windows:
   * Run `java -cp <path to JAMA>; main` 
+  
+* If the run was successful the command line should look like this
+ * ![Command Line](https://i.imgur.com/XYF59wG.png)
+ 
+* You will be greeted with a window that looks like this
+ * ![Neural Network Window](https://i.imgur.com/KazJP0x.png)
+
+* Draw a number on the white area on the left side
+ * ![Neural Network Window](https://i.imgur.com/40bkxlg.png)
+ 
+* Push submit to have your drawn number evaluated by the neural network
+ * ![Drawing a Number](https://i.imgur.com/5Yob7Fg.png)
+
+* Push clear to start the whole process over again.
 
 ### disclaimer
 Although the this program is about 95% accurate, with the testing data in its current iteration it is significantly less accurate with user drawn numbers, and is still very much a work in progress when it comes to improving the accuracy of this feature.
