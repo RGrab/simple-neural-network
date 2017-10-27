@@ -33,14 +33,14 @@ This project uses the Java Matrix package known as [JAMA](http://math.nist.gov/j
 * If the run was successful the command line should look like this
  * ![Command Line](https://i.imgur.com/XYF59wG.png)
  
-* You will be greeted with a window that looks like this
- * ![Neural Network Window](https://i.imgur.com/KazJP0x.png)
+* You will be greeted with a window that looks like this:
+ ![Neural Network Window](https://i.imgur.com/KazJP0x.png)
 
-* Draw a number on the white area on the left side
- * ![Neural Network Window](https://i.imgur.com/40bkxlg.png)
+* Draw a number on the white area on the left side:
+ ![Neural Network Window](https://i.imgur.com/40bkxlg.png)
  
-* Push submit to have your drawn number evaluated by the neural network
- * ![Drawing a Number](https://i.imgur.com/5Yob7Fg.png)
+* Push submit to have your drawn number evaluated by the neural network:
+ ![Drawing a Number](https://i.imgur.com/5Yob7Fg.png)
 
 * Push clear to start the whole process over again.
 
